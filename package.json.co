@@ -7,13 +7,27 @@ keywords                        : <[ nested object delegate accessor proxy lodas
 
 main                            : './dotted'
 
+scripts                         :
+    prepublish                  : '
+            coco -bcj package.json.co 
+            && mkdir -p dist
+            && browserify dotted --standalone dotted -r dotted -x lodash --debug --no-builtins -t cocoify 
+            | exorcist -u dotted.map dist/dotted.map > dist/dotted.js 
+            && uglifyjs dist/dotted.js -o dist/dotted.min.js 
+                --in-source-map dist/dotted.map --source-map dist/dotted.min.map
+        '
+
 peerDependencies:
-    'lodash'                    : '*'
+    'lodash'                    : '2.x'
 
 devDependencies                 : 
     'coco'                      : '0.9.x'
+    'uglify-js'                 : '2.x'
+    'browserify'                : '6.x'
+    'cocoify'                   : 'https://github.com/dsc/cocoify.git'
+    'exorcist'                  : '0.1.x'
+    
     'underscore'                : '1.x'
-    'lodash'                    : '2.x'
 
 repository                      : type:'git', url:'https://github.com/dsc/dotted.git'
 bugs                            : url:'https://github.com/dsc/dotted/issues'
